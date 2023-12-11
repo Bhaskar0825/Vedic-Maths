@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planetary Calculator</title>
+    <title>Planetary Calculators</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <style>
+        /* Your existing CSS styles here */
+
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -33,8 +35,8 @@
         }
 
         #logo {
-            width: 50px; /* Adjust the width as needed */
-            height: 50px; /* Adjust the height as needed */
+            width: 50px;
+            height: 50px;
             margin-right: 10px;
         }
 
@@ -95,6 +97,7 @@
             margin-bottom: 20px;
         }
 
+        input[type="number"],
         input[type="date"] {
             padding: 10px;
             font-size: 14px;
@@ -118,10 +121,11 @@
             background-color: #357ae8;
         }
 
-        #result {
+        #result,
+        #resultAge,
+        #resultConverter {
             margin-top: 20px;
             font-size: 18px;
-            text-align: left;
         }
 
         @media only screen and (max-width: 600px) {
@@ -135,6 +139,7 @@
                 padding: 10px;
             }
 
+            input[type="number"],
             input[type="date"] {
                 font-size: 12px;
             }
@@ -143,7 +148,9 @@
                 font-size: 14px;
             }
 
-            #result {
+            #result,
+            #resultAge,
+            #resultConverter {
                 font-size: 16px;
             }
         }
@@ -159,90 +166,76 @@
     </header>
 
     <div id="tabs">
-        <div class="tab" onclick="showTab(1)">Date on Planets</div>
+        <div class="tab" onclick="showTab(1)">Solar Date Converter</div>
         <div class="tab" onclick="showTab(2)">Age on Planets</div>
     </div>
 
     <div id="content">
-        <!-- Content for the first tab -->
+        <!-- Content for the Solar Date Converter tab -->
         <div id="tab1">
-            <h2>Date on Different Planets</h2>
-            <label for="earthDateInput">Select Date on Earth:</label>
-            <input type="date" id="earthDateInput">
-            <button onclick="calculatePlanetDates()">Calculate</button>
-            <div id="result"></div>
+            <h2>Solar Date Converter</h2>
+            <label for="earthDate">Enter Earth Date:</label>
+            <input type="date" id="earthDate">
+
+            <label for="referenceDate">Choose Reference Calendar Date:</label>
+            <input type="date" id="referenceDate">
+
+            <button onclick="convertDate()">Convert</button>
+
+            <div id="resultConverter"></div>
 
             <script>
-                function calculatePlanetDates() {
-                    const earthDateInput = document.getElementById('earthDateInput').value;
-                    const resultElement = document.getElementById('result');
+                function convertDate() {
+                    const earthDate = new Date(document.getElementById("earthDate").value);
+                    const referenceDate = new Date(document.getElementById("referenceDate").value);
 
-                    if (!earthDateInput) {
-                        resultElement.innerHTML = 'Please select a valid date on Earth.';
+                    if (isNaN(earthDate.getTime()) || isNaN(referenceDate.getTime())) {
+                        alert("Please enter valid dates.");
                         return;
                     }
 
-                    const earthDate = new Date(earthDateInput);
-                    const planetDates = calculateDatesOnPlanets(earthDate);
+                    // Calculate time difference in milliseconds
+                    const timeDiff = earthDate.getTime() - referenceDate.getTime();
 
-                    let resultHTML = `<h3>On ${earthDate.toDateString()}:</h3>`;
-                    for (const planet in planetDates) {
-                        resultHTML += `<p><strong>${planet}:</strong> ${planetDates[planet]}</p>`;
+                    // Calculate time in seconds
+                    const timeInSeconds = timeDiff / 1000;
+
+                    // Planetary conversion factors (example values, you may adjust these)
+                    const planetaryFactors = {
+                        mercury: 0.2408467,
+                        venus: 0.61519726,
+                        earth: 1.0,
+                        mars: 1.8808158,
+                        jupiter: 11.862615,
+                        saturn: 29.447498,
+                        uranus: 84.016846,
+                        neptune: 164.79132,
+                        pluto: 248.00
+                    };
+
+                    // Calculate time on other planets
+                    const results = {};
+                    for (const planet in planetaryFactors) {
+                        const planetTimeInSeconds = timeInSeconds / planetaryFactors[planet];
+                        const planetDate = new Date(referenceDate.getTime() + planetTimeInSeconds * 1000);
+                        results[planet] = planetDate.toDateString();
                     }
 
-                    resultElement.innerHTML = resultHTML;
+                    displayResultConverter(results);
                 }
 
-                function calculateDatesOnPlanets(earthDate) {
-                    // Mock conversion logic (replace with actual conversion)
-                    const planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+                function displayResultConverter(result) {
+                    const resultDiv = document.getElementById("resultConverter");
 
-                    const result = planets.reduce((acc, planet) => {
-                        const planetDate = new Date(earthDate);
-
-                        // Adjust date for each planet (this is a simple approximation)
-                        switch (planet) {
-                            case 'Mercury':
-                                planetDate.setTime(planetDate.getTime() * 0.24);
-                                break;
-                            case 'Venus':
-                                planetDate.setTime(planetDate.getTime() * 0.62);
-                                break;
-                            case 'Earth':
-                                // Earth remains unchanged
-                                break;
-                            case 'Mars':
-                                planetDate.setTime(planetDate.getTime() * 1.88);
-                                break;
-                            case 'Jupiter':
-                                planetDate.setTime(planetDate.getTime() * 11.86);
-                                break;
-                            case 'Saturn':
-                                planetDate.setTime(planetDate.getTime() * 29.46);
-                                break;
-                            case 'Uranus':
-                                planetDate.setTime(planetDate.getTime() * 84.02);
-                                break;
-                            case 'Neptune':
-                                planetDate.setTime(planetDate.getTime() * 164.8);
-                                break;
-                            case 'Pluto':
-                                planetDate.setTime(planetDate.getTime() * 248);
-                                break;
-                            default:
-                                break;
-                        }
-
-                        acc[planet] = planetDate.toDateString();
-                        return acc;
-                    }, {});
-
-                    return result;
+                    resultDiv.innerHTML = '<h2>Converted Dates</h2>';
+                    for (const planet in result) {
+                        resultDiv.innerHTML += `<p><strong>${planet.charAt(0).toUpperCase() + planet.slice(1)} Date:</strong> ${result[planet]}</p>`;
+                    }
                 }
             </script>
         </div>
 
-        <!-- Content for the second tab -->
+        <!-- Content for the Age on Planets tab -->
         <div id="tab2" style="display: none;">
             <h2>Calculate Your Age on Other Planets</h2>
 
