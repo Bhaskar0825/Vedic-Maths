@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planetary Calculator</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #logo {
+            width: 50px; /* Adjust the width as needed */
+            height: 50px; /* Adjust the height as needed */
+            margin-right: 10px;
+        }
+
+        #logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        #tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: #444;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tab {
+            padding: 15px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            border-radius: 0;
+            transition: background-color 0.3s;
+        }
+
+        .tab:hover {
+            background-color: #666;
+        }
+
+        .tab.active {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        #content {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            font-size: 14px;
+            margin: 8px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 15px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #357ae8;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .tab {
+                flex-grow: 1;
+            }
+        }
+
+        @media only screen and (max-width: 400px) {
+            #content {
+                padding: 10px;
+            }
+
+            input[type="date"] {
+                font-size: 12px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+
+            #result {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div id="logo">
+            <img src="https://www.lfpsdelhi.com/images/logo.png" alt="Logo">
+        </div>
+        <h1>Vedic Maths</h1>
+    </header>
+
+    <div id="tabs">
+        <div class="tab" onclick="showTab(1)">Date on Planets</div>
+        <div class="tab" onclick="showTab(2)">Age on Planets</div>
+    </div>
+
+    <div id="content">
+        <!-- Content for the first tab -->
+        <div id="tab1">
+            <h2>Date on Different Planets</h2>
+            <label for="earthDateInput">Select Date on Earth:</label>
+            <input type="date" id="earthDateInput">
+            <button onclick="calculatePlanetDates()">Calculate</button>
+            <div id="result"></div>
+
+            <script>
+                function calculatePlanetDates() {
+                    const earthDateInput = document.getElementById('earthDateInput').value;
+                    const resultElement = document.getElementById('result');
+
+                    if (!earthDateInput) {
+                        resultElement.innerHTML = 'Please select a valid date on Earth.';
+                        return;
+                    }
+
+                    const earthDate = new Date(earthDateInput);
+                    const planetDates = calculateDatesOnPlanets(earthDate);
+
+                    let resultHTML = `<h3>On ${earthDate.toDateString()}:</h3>`;
+                    for (const planet in planetDates) {
+                        resultHTML += `<p><strong>${planet}:</strong> ${planetDates[planet]}</p>`;
+                    }
+
+                    resultElement.innerHTML = resultHTML;
+                }
+
+                function calculateDatesOnPlanets(earthDate) {
+                    // Mock conversion logic (replace with actual conversion)
+                    const planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+
+                    const result = planets.reduce((acc, planet) => {
+                        const planetDate = new Date(earthDate);
+
+                        // Adjust date for each planet (this is a simple approximation)
+                        switch (planet) {
+                            case 'Mercury':
+                                planetDate.setTime(planetDate.getTime() * 0.24);
+                                break;
+                            case 'Venus':
+                                planetDate.setTime(planetDate.getTime() * 0.62);
+                                break;
+                            case 'Earth':
+                                // Earth remains unchanged
+                                break;
+                            case 'Mars':
+                                planetDate.setTime(planetDate.getTime() * 1.88);
+                                break;
+                            case 'Jupiter':
+                                planetDate.setTime(planetDate.getTime() * 11.86);
+                                break;
+                            case 'Saturn':
+                                planetDate.setTime(planetDate.getTime() * 29.46);
+                                break;
+                            case 'Uranus':
+                                planetDate.setTime(planetDate.getTime() * 84.02);
+                                break;
+                            case 'Neptune':
+                                planetDate.setTime(planetDate.getTime() * 164.8);
+                                break;
+                            case 'Pluto':
+                                planetDate.setTime(planetDate.getTime() * 248);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        acc[planet] = planetDate.toDateString();
+                        return acc;
+                    }, {});
+
+                    return result;
+                }
+            </script>
+        </div>
+
+        <!-- Content for the second tab -->
+        <div id="tab2" style="display: none;">
+            <h2>Calculate Your Age on Other Planets</h2>
+
+            <label for="dob">Enter your date of birth:</label>
+            <input type="date" id="dob">
+
+            <button onclick="calculateAge()">Calculate Age</button>
+
+            <div id="resultAge"></div>
+
+            <script>
+                function calculateAge() {
+                    var dob = document.getElementById('dob').value;
+                    var dobDate = new Date(dob);
+                    var currentDate = new Date();
+
+                    var timeDiff = currentDate - dobDate;
+                    var earthAge = timeDiff / (365.25 * 24 * 60 * 60 * 1000); // Age in Earth years
+
+                    var planetFactors = {
+                        'Earth': 1,
+                        'Mercury': 0.2408467,
+                        'Venus': 0.61519726,
+                        'Mars': 1.8808158,
+                        'Jupiter': 11.862615,
+                        'Saturn': 29.447498,
+                        'Uranus': 84.016846,
+                        'Neptune': 164.79132,
+                        'Pluto': 248.00
+                    };
+
+                    var resultHtml = '<h3>Your age on different planets:</h3>';
+
+                    for (var planet in planetFactors) {
+                        var planetAge = earthAge / planetFactors[planet];
+                        var years = Math.floor(planetAge);
+                        var remainingDays = (planetAge - years) * 365.25; // Calculate remaining days
+                        var months = Math.floor(remainingDays / (365.25 / 12));
+                        var days = Math.floor(remainingDays % (365.25 / 12));
+
+                        resultHtml += `<p>${planet}: ${years} years, ${months} months, ${days} days</p>`;
+                    }
+
+                    document.getElementById('resultAge').innerHTML = resultHtml;
+                }
+            </script>
+        </div>
+    </div>
+
+    <footer>
+        <p>Vedic Maths Calculator</p>
+        <p>Little Flowers Public Senior Secondary School</p>
+    </footer>
+
+    <script>
+        function showTab(tabIndex) {
+            // Hide all tabs
+            document.getElementById('tab1').style.display = 'none';
+            document.getElementById('tab2').style.display = 'none';
+
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+
+            // Show the selected tab
+            document.getElementById('tab' + tabIndex).style.display = 'block';
+
+            // Activate the selected tab
+            document.querySelector('.tab:nth-child(' + tabIndex + ')').classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
